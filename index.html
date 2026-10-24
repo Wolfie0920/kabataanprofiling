@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Katipunan ng Kabataan Profiling</title>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#eeebe3;--card:#fcf9f0;--ink:#16324f;--mut:#51606f;--line:#ddd8cb;--acc:#bd5a33;--grn:#2f7a55;--gbg:#dcefe3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px 'Public Sans',system-ui,sans-serif}
+header{padding:22px 5vw;border-bottom:1px solid var(--line)}
+header small{display:block;color:var(--acc);font-weight:600;letter-spacing:.12em;font-size:12px;text-transform:uppercase}
+h1,h2{font-family:Bitter,Georgia,serif;margin:2px 0;color:var(--ink)}
+h1{font-size:34px}
+main{max-width:1120px;margin:28px auto;padding:0 5vw}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:28px}
+.stats b{display:block;font-size:26px;margin-top:6px}.stats span{font-size:13px;color:var(--mut)}
+.bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+.bar input{flex:1;min-width:200px}.bar select{width:auto}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:10px 18px;cursor:pointer;background:var(--acc);color:#fff;text-decoration:none;display:inline-block}
+button.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+button.sm{padding:4px 8px;font-size:13px;background:none;color:var(--ink);border:1px solid var(--line)}button.sm.del{color:var(--acc)}
+.tw{overflow-x:auto;padding:0}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600;font-size:14px}tr:last-child td{border:0}
+.pill{background:var(--gbg);color:var(--grn);padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.o{background:#f6e2d6;color:var(--acc)}
+.note{font-size:12px;color:var(--mut);margin-top:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:5px}
+fieldset{border:0;padding:0;margin:0 0 26px}legend{font-family:Bitter,serif;font-size:19px;font-weight:700;margin-bottom:12px;color:var(--acc)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px}.chk input{width:auto;margin-top:3px}
+.err{color:#b3261e;font-size:14px;margin:10px 0}
+.hide{display:none}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);max-width:520px;width:92%}
+dl{display:grid;grid-template-columns:140px 1fr;gap:8px 12px;margin:14px 0}dt{color:var(--mut)}dd{margin:0;font-weight:500}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><small>Sangguniang Kabataan · KK Survey Questionnaire</small><h1>Katipunan ng Kabataan Profiling</h1></header>
+<main>
+
+<!-- PUBLIC FORM -->
+<section id="vForm" class="hide">
+  <div class="top"><h2>Survey Form</h2><a class="btn ghost" id="toAdmin" href="#admin" style="background:none;color:var(--ink);border:1px solid var(--line)">SK Officials Login</a></div>
+  <p style="color:var(--mut)">Please answer honestly. Fields marked * are required.</p>
+  <form id="f" class="card">
+    <fieldset><legend>Personal Information</legend><div class="grid">
+      <div><label>Last name *</label><input name="last_name" required></div>
+      <div><label>First name *</label><input name="first_name" required></div>
+      <div><label>Middle name</label><input name="middle_name"></div>
+      <div><label>Sex at birth *</label><select name="sex" required><option value="">Select</option><option>Male</option><option>Female</option></select></div>
+      <div><label>Birthday * (age 15–30)</label><input type="date" name="birthday" required></div>
+      <div><label>Civil status</label><select name="civil_status"><option>Single</option><option>Married</option><option>Live-in</option><option>Separated</option><option>Widowed</option></select></div>
+    </div></fieldset>
+    <fieldset><legend>Contact &amp; Address</legend><div class="grid">
+      <div><label>Contact number *</label><input name="contact" inputmode="tel" required></div>
+      <div><label>Email</label><input type="email" name="email"></div>
+      <div><label>Barangay *</label><input name="barangay" required></div>
+      <div><label>Purok</label><input name="purok"></div>
+    </div></fieldset>
+    <fieldset><legend>Youth Profile</legend><div class="grid">
+      <div><label>Youth classification *</label><select name="classification" required><option value="">Select</option><option>In-School Youth</option><option>Out-of-School Youth</option></select></div>
+      <div><label>Highest educational attainment</label><select name="education"><option value="">Select</option><option>Elementary</option><option>High School</option><option>Senior High School</option><option>Vocational / TVET</option><option>College Level</option><option>College Graduate</option><option>Master's / Doctorate</option></select></div>
+      <div><label>Work status</label><select name="work_status"><option value="">Select</option><option>Employed</option><option>Self-employed</option><option>Unemployed</option><option>Looking for work</option><option>Not interested in looking for work</option></select></div>
+    </div></fieldset>
+    <fieldset><legend>Civic Participation</legend><div class="grid">
+      <div><label>Registered SK voter? *</label><select name="sk_voter" required><option value="">Select</option><option value="true">Yes</option><option value="false">No</option></select></div>
+      <div><label>Voted in the last SK election? *</label><select name="voted_last" required><option value="">Select</option><option value="true">Yes</option><option value="false">No</option></select></div>
+      <div><label>Attended a KK assembly? *</label><select name="attended_assembly" required><option value="">Select</option><option value="true">Yes</option><option value="false">No</option></select></div>
+    </div></fieldset>
+    <label class="chk"><input type="checkbox" id="consent" required> I agree that my information may be collected and used by the Sangguniang Kabataan for youth profiling, in line with the Data Privacy Act of 2012.</label>
+    <div id="fErr" class="err"></div>
+    <button id="fBtn">Submit</button>
+  </form>
+  <div id="thanks" class="card hide"><h2>Salamat!</h2><p>Your response has been recorded.</p><button onclick="showForm()">Submit another response</button></div>
+</section>
+
+<!-- LOGIN -->
+<section id="vLogin" class="hide">
+  <form id="lf" class="card" style="max-width:380px;margin:auto">
+    <h2>SK Officials Login</h2><br>
+    <label>Email</label><input type="email" id="em" required><br><br>
+    <label>Password</label><input type="password" id="pw" required>
+    <div id="lErr" class="err"></div>
+    <button>Log in</button> <a href="#" class="btn ghost" style="background:none;color:var(--ink);border:1px solid var(--line)">Back</a>
+  </form>
+</section>
+
+<!-- DASHBOARD -->
+<section id="vAdmin" class="hide">
+  <div class="stats">
+    <div class="card"><span>Total Respondents</span><b id="s1">0</b></div>
+    <div class="card"><span>In-School Youth</span><b id="s2">0</b></div>
+    <div class="card"><span>Out-of-School Youth</span><b id="s3">0</b></div>
+    <div class="card"><span>Registered SK Voters</span><b id="s4">0</b></div>
+  </div>
+  <div class="bar">
+    <input id="q" placeholder="Search name, barangay, or purok...">
+    <select id="cf"><option value="">All classifications</option><option>In-School Youth</option><option>Out-of-School Youth</option></select>
+    <a class="btn" href="#">+ Add Respondent</a>
+    <button class="ghost" id="csv">Export CSV</button>
+    <button class="ghost" id="out">Log out</button>
+  </div>
+  <div class="card tw"><table><thead><tr><th>#</th><th>Name</th><th>Age</th><th>Barangay</th><th>Classification</th><th>Contact</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+  <p class="note" id="aNote">Records are stored securely in Supabase.</p>
+</section>
+</main>
+
+<dialog id="dlg"><div id="dBody"></div><button class="ghost" onclick="dlg.close()" style="background:none;color:var(--ink);border:1px solid var(--line)">Close</button></dialog>
+
+<script>
+// ====== CONFIG: paste from Supabase > Project Settings > API ======
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
+// ==================================================================
+const $ = id => document.getElementById(id);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let rows = [];
+
+function showForm(){ $("f").reset(); $("f").classList.remove("hide"); $("thanks").classList.add("hide"); $("fErr").textContent=""; }
+async function route(){
+  ["vForm","vLogin","vAdmin"].forEach(v => $(v).classList.add("hide"));
+  if (location.hash !== "#admin") { $("vForm").classList.remove("hide"); return; }
+  const { data:{ session } } = await sb.auth.getSession();
+  if (!session) { $("vLogin").classList.remove("hide"); return; }
+  $("vAdmin").classList.remove("hide"); load();
+}
+window.addEventListener("hashchange", route); route();
+
+// Submit form (public)
+$("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const fd = Object.fromEntries(new FormData(e.target));
+  const b = new Date(fd.birthday), t = new Date();
+  let age = t.getFullYear() - b.getFullYear();
+  if (t < new Date(t.getFullYear(), b.getMonth(), b.getDate())) age--;
+  if (age < 15 || age > 30) { $("fErr").textContent = "The KK survey is for youth aged 15 to 30 only."; return; }
+  ["sk_voter","voted_last","attended_assembly"].forEach(k => fd[k] = fd[k] === "true");
+  Object.keys(fd).forEach(k => { if (fd[k] === "") fd[k] = null; });
+  fd.age = age; $("fBtn").disabled = true; $("fErr").textContent = "";
+  const { error } = await sb.from("kk_respondents").insert(fd);
+  $("fBtn").disabled = false;
+  if (error) {
+    $("fErr").textContent = error.code === "23505"
+      ? "You have already submitted this survey. Each kabataan can only respond once."
+      : "Could not submit: " + error.message;
+    return;
+  }
+  $("f").classList.add("hide"); $("thanks").classList.remove("hide");
+});
+
+// Login / logout
+$("lf").addEventListener("submit", async e => {
+  e.preventDefault();
+  const { error } = await sb.auth.signInWithPassword({ email:$("em").value, password:$("pw").value });
+  if (error) $("lErr").textContent = error.message; else { $("lErr").textContent=""; route(); }
+});
+$("out").onclick = async () => { await sb.auth.signOut(); location.hash = ""; route(); };
+
+// Dashboard
+async function load(){
+  const { data, error } = await sb.from("kk_respondents").select("*").order("no");
+  if (error) { $("aNote").textContent = "Error: " + error.message; return; }
+  rows = data; render();
+}
+function filtered(){
+  const q = $("q").value.toLowerCase(), c = $("cf").value;
+  return rows.filter(r => (!c || r.classification === c) &&
+    (`${r.last_name} ${r.first_name} ${r.barangay} ${r.purok||""}`).toLowerCase().includes(q));
+}
+function render(){
+  $("s1").textContent = rows.length;
+  $("s2").textContent = rows.filter(r => r.classification === "In-School Youth").length;
+  $("s3").textContent = rows.filter(r => r.classification === "Out-of-School Youth").length;
+  $("s4").textContent = rows.filter(r => r.sk_voter).length;
+  const list = filtered();
+  $("tb").innerHTML = list.length ? list.map(r => `<tr>
+    <td>${String(r.no).padStart(3,"0")}</td>
+    <td><b>${esc(r.last_name)}, ${esc(r.first_name)} ${esc(r.middle_name||"")}</b></td>
+    <td>${r.age}</td><td>${esc(r.barangay)}</td>
+    <td><span class="pill ${r.classification.startsWith("Out")?"o":""}">${esc(r.classification)}</span></td>
+    <td>${esc(r.contact)}</td>
+    <td style="white-space:nowrap"><button class="sm" data-v="${r.id}">View</button> <button class="sm del" data-d="${r.id}">Delete</button></td></tr>`).join("")
+    : `<tr><td colspan="7" style="color:var(--mut)">No respondents found.</td></tr>`;
+}
+$("q").oninput = render; $("cf").onchange = render;
+$("tb").addEventListener("click", async e => {
+  const v = e.target.dataset.v, d = e.target.dataset.d;
+  if (v) {
+    const r = rows.find(x => x.id === v), yn = x => x ? "Yes" : "No";
+    const f = [["Name",`${r.first_name} ${r.middle_name||""} ${r.last_name}`],["Sex",r.sex],["Birthday",r.birthday],["Age",r.age],["Civil status",r.civil_status],
+      ["Contact",r.contact],["Email",r.email],["Address",`${r.purok?r.purok+", ":""}${r.barangay}`],["Classification",r.classification],
+      ["Education",r.education],["Work status",r.work_status],["SK voter",yn(r.sk_voter)],["Voted last SK",yn(r.voted_last)],["Attended assembly",yn(r.attended_assembly)]];
+    $("dBody").innerHTML = `<h2>Respondent ${String(r.no).padStart(3,"0")}</h2><dl>${f.map(([k,x])=>`<dt>${k}</dt><dd>${esc(x||"—")}</dd>`).join("")}</dl>`;
+    dlg.showModal();
+  }
+  if (d && confirm("Delete this record permanently?")) {
+    const { error } = await sb.from("kk_respondents").delete().eq("id", d);
+    if (error) alert(error.message); else load();
+  }
+});
+$("csv").onclick = () => {
+  if (!rows.length) return;
+  const keys = Object.keys(rows[0]).filter(k => k !== "id");
+  const out = [keys.join(",")].concat(rows.map(r => keys.map(k => `"${String(r[k] ?? "").replace(/"/g,'""')}"`).join(",")));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([out.join("\n")], { type:"text/csv" }));
+  a.download = "kk-respondents.csv"; a.click();
+};
+</script>
+</body>
+</html>
