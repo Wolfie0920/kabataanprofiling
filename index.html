@@ -2,28 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Katipunan ng Kabataan Profiling</title>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{--bg:#eeebe3;--card:#fcf9f0;--ink:#16324f;--mut:#51606f;--line:#ddd8cb;--acc:#bd5a33;--grn:#2f7a55;--gbg:#dcefe3}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px 'Public Sans',system-ui,sans-serif}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:15px 'Public Sans',system-ui,sans-serif}
 header{padding:22px 5vw;border-bottom:1px solid var(--line)}
 header small{display:block;color:var(--acc);font-weight:600;letter-spacing:.12em;font-size:12px;text-transform:uppercase}
 h1,h2{font-family:Bitter,Georgia,serif;margin:2px 0;color:var(--ink)}
-h1{font-size:34px}
+h1{font-size:clamp(24px,5.5vw,34px);line-height:1.2}
 main{max-width:1120px;margin:28px auto;padding:0 5vw}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:28px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:18px;margin-bottom:28px}
 .stats b{display:block;font-size:26px;margin-top:6px}.stats span{font-size:13px;color:var(--mut)}
 .bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+input,select,textarea{font:inherit;font-size:16px;min-height:44px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
 .bar input{flex:1;min-width:200px}.bar select{width:auto}
-button,.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:10px 18px;cursor:pointer;background:var(--acc);color:#fff;text-decoration:none;display:inline-block}
+button,.btn{font:inherit;min-height:44px;line-height:1.2;text-align:center;font-weight:600;border:0;border-radius:8px;padding:10px 18px;cursor:pointer;background:var(--acc);color:#fff;text-decoration:none;display:inline-block}
 button.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
-button.sm{padding:4px 8px;font-size:13px;background:none;color:var(--ink);border:1px solid var(--line)}button.sm.del{color:var(--acc)}
+button.sm{padding:6px 12px;min-height:36px;font-size:13px;background:none;color:var(--ink);border:1px solid var(--line)}button.sm.del{color:var(--acc)}
 .tw{overflow-x:auto;padding:0}
 table{width:100%;border-collapse:collapse;min-width:680px}
 th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line)}
@@ -31,15 +32,40 @@ th{color:var(--mut);font-weight:600;font-size:14px}tr:last-child td{border:0}
 .pill{background:var(--gbg);color:var(--grn);padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
 .pill.o{background:#f6e2d6;color:var(--acc)}
 .note{font-size:12px;color:var(--mut);margin-top:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:14px}
 label{display:block;font-size:13px;font-weight:600;margin-bottom:5px}
 fieldset{border:0;padding:0;margin:0 0 26px}legend{font-family:Bitter,serif;font-size:19px;font-weight:700;margin-bottom:12px;color:var(--acc)}
 .chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px}.chk input{width:auto;margin-top:3px}
 .err{color:#b3261e;font-size:14px;margin:10px 0}
 .hide{display:none}
-dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);max-width:520px;width:92%}
+dialog{max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);max-width:520px;width:92%}
 dl{display:grid;grid-template-columns:140px 1fr;gap:8px 12px;margin:14px 0}dt{color:var(--mut)}dd{margin:0;font-weight:500}
+td,dd{overflow-wrap:anywhere}
+.chk input{min-height:0;width:20px;height:20px;flex:none}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header{padding:22px max(5vw,env(safe-area-inset-left)) 22px max(5vw,env(safe-area-inset-left))}
+main{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+@media (min-width:721px) and (max-width:1024px){.bar input{flex:1 1 100%}.bar>*{flex:1 1 auto}}
+@media (max-width:720px){
+  header{padding:16px 5vw}
+  main{margin:18px auto}
+  .stats{grid-template-columns:1fr 1fr;gap:12px}
+  .stats .card{padding:14px}
+  .bar{flex-direction:column;align-items:stretch}
+  .bar select,.bar .btn,.bar button{width:100%}
+  .top{align-items:stretch}.top .btn{width:100%}
+  form.card button#fBtn,#thanks button{width:100%}
+  .tw{overflow:visible;background:none;border:0}
+  table,thead,tbody,tr,td{display:block;min-width:0;width:100%}
+  thead{display:none}
+  tr{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin-bottom:12px}
+  td{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border:0;text-align:right}
+  td[data-l]::before{content:attr(data-l);color:var(--mut);font-weight:600;font-size:13px;text-align:left;flex:none}
+  td:last-child{justify-content:flex-end;padding-top:10px;margin-top:4px;border-top:1px solid var(--line)}
+  dl{grid-template-columns:1fr;gap:2px}dt{margin-top:8px;font-size:13px}
+  dialog{width:94%;padding:16px}
+}
+@media (max-width:380px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -117,8 +143,8 @@ dl{display:grid;grid-template-columns:140px 1fr;gap:8px 12px;margin:14px 0}dt{co
 
 <script>
 // ====== CONFIG: paste from Supabase > Project Settings > API ======
-const SUPABASE_URL = "https://wxhhunqqdasbsjtnhjtz.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_gwYnHL9WdDcr8q3kMam6gw_zqNppWW6";
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
 // ==================================================================
 const $ = id => document.getElementById(id);
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -183,11 +209,11 @@ function render(){
   $("s4").textContent = rows.filter(r => r.sk_voter).length;
   const list = filtered();
   $("tb").innerHTML = list.length ? list.map(r => `<tr>
-    <td>${String(r.no).padStart(3,"0")}</td>
-    <td><b>${esc(r.last_name)}, ${esc(r.first_name)} ${esc(r.middle_name||"")}</b></td>
-    <td>${r.age}</td><td>${esc(r.barangay)}</td>
-    <td><span class="pill ${r.classification.startsWith("Out")?"o":""}">${esc(r.classification)}</span></td>
-    <td>${esc(r.contact)}</td>
+    <td data-l="No.">${String(r.no).padStart(3,"0")}</td>
+    <td data-l="Name"><b>${esc(r.last_name)}, ${esc(r.first_name)} ${esc(r.middle_name||"")}</b></td>
+    <td data-l="Age">${r.age}</td><td data-l="Barangay">${esc(r.barangay)}</td>
+    <td data-l="Classification"><span class="pill ${r.classification.startsWith("Out")?"o":""}">${esc(r.classification)}</span></td>
+    <td data-l="Contact">${esc(r.contact)}</td>
     <td style="white-space:nowrap"><button class="sm" data-v="${r.id}">View</button> <button class="sm del" data-d="${r.id}">Delete</button></td></tr>`).join("")
     : `<tr><td colspan="7" style="color:var(--mut)">No respondents found.</td></tr>`;
 }
